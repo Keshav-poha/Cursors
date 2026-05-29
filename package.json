@@ -1,0 +1,44 @@
+{
+  "name": "lite-cursor-effects",
+  "version": "1.0.1",
+  "description": "Extremely lightweight React cursor effects (0 dependencies other than React)",
+  "source": "src/index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.module.js",
+  "unpkg": "dist/index.umd.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "microbundle --jsx React.createElement",
+    "dev": "microbundle watch --jsx React.createElement"
+  },
+  "keywords": [
+    "cursor",
+    "cursor-effects",
+    "cursor-trail",
+    "pointer-effects",
+    "react",
+    "react-components",
+    "3d",
+    "3d-perspective",
+    "3d-tilt",
+    "parallax",
+    "magnetic",
+    "gooey",
+    "depth-tunnel",
+    "isometric",
+    "card-stack",
+    "3d-card",
+    "lightweight",
+    "zero-dependencies"
+  ],
+  "author": "Keshav Kumar",
+  "license": "MIT",
+  "devDependencies": {
+    "microbundle": "^0.15.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}
