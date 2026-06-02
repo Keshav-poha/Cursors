@@ -353,5 +353,42 @@ function App() {
 
 ---
 
+## Contributing
+
+We welcome contributions to make `lite-cursor-effects` even better! Since this is an open-source project, any help is appreciated. 
+
+### How to Contribute
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/amazing-effect`)
+3. Make your changes in the `src/` directory
+4. Run the showcase locally to test (`cd showcase && npm install && npm run dev`)
+5. Commit your changes (`git commit -m 'feat: Add amazing new effect'`)
+6. Push to the branch (`git push origin feature/amazing-effect`)
+7. Open a Pull Request
+
+---
+
+## 🌟 Good First Issues
+
+If you're looking to contribute but don't know where to start, check out these good first issues:
+
+### 1. Add `prefers-reduced-motion` Support
+**Description:** Some users experience discomfort with heavy animations. We should add a check for the `prefers-reduced-motion` CSS media query and disable or tone down the 3D effects when it's active.
+**Where to look:** `src/hooks/useTilt.js`, `src/hooks/useMagnetic.js`
+
+### 2. Add TypeScript Definitions (`index.d.ts`)
+**Description:** The library is written in JavaScript, but adding a TypeScript declaration file would make it much easier for TS users to consume the components with full intellisense and prop validation.
+**Where to look:** Create a new `src/index.d.ts` file covering the exports.
+
+### 3. Create a "Magnifying Glass" Cursor Effect
+**Description:** Create a new component `<MagnifyingCursor />` that acts as a magnifying glass, enlarging the content beneath it using CSS `backdrop-filter: blur()` or CSS zooming techniques.
+**Where to look:** Create `src/MagnifyingCursor.jsx` and add it to `src/index.js`.
+
+### 4. Improve Showcase Mobile Experience
+**Description:** The showcase currently looks best on desktop since many effects are cursor-driven. We should add a banner on mobile devices explaining that the best experience is on a desktop, or gracefully fallback the 3D effects on touch devices.
+**Where to look:** `showcase/src/App.jsx`
+
+---
+
 ## License
 MIT License. Feel free to use this library in personal or commercial projects.
