@@ -12,6 +12,7 @@
 - **High Performance**: Employs `requestAnimationFrame` interpolation (lerp) and hardware-accelerated CSS transforms.
 - **Sleek Customization**: Every effect exposes range sliders and color pickers for visual fine-tuning.
 - **Default System Cursor Compatible**: Custom cursor overlays render alongside the default browser pointer without hiding it.
+- **Reduced-motion aware interactions**: Shared tilt and magnetic hooks now stay at rest when the OS requests less motion.
 
 ---
 

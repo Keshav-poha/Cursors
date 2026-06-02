@@ -30,6 +30,8 @@ function App() {
 ### 2. Element Physics (Magnetic & 3D Tilt)
 Apply physical attraction and rotation to specific elements.
 
+These components respect the user's `prefers-reduced-motion` setting and stay at rest when reduced motion is enabled at the OS level.
+
 ```jsx
 import { Magnetic, Tilt } from 'lite-cursor-effects';
 
