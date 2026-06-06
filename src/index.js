@@ -20,3 +20,4 @@ export { TiltBoard, TiltBoardItem } from './TiltBoard';
 export { CardStack } from './CardStack';
 export { useMagnetic } from './hooks/useMagnetic';
 export { useTilt } from './hooks/useTilt';
+export { LiquidDistortionCursor } from './LiquidDistortionCursor';

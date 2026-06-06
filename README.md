@@ -216,6 +216,15 @@ function App() {
 | `buoyancy` | `number` | `0.5` | Decelerating vertical drift speed (negative falls, positive floats) |
 | `turbulence` | `number` | `1.0` | Random coordinate velocity scatter radius |
 
+### `<LiquidDistortionCursor />`
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `radius` | `number` | `200` | Size of the distortion circle (pixels) |
+| `distortionAmount` | `number` | `25` | SVG `feDisplacementMap` scale factor |
+| `baseFrequency` | `number` | `0.015` | SVG `feTurbulence` base frequency |
+| `speed` | `number` | `8` | Animation duration of the liquid loop (seconds) |
+| `zIndex` | `number` | `9999` | Z-index of the cursor overlay |
+
 ### `<BoundaryCursor />`
 | Prop | Type | Default | Description |
 | :--- | :--- | :--- | :--- |

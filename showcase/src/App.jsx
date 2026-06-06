@@ -22,7 +22,8 @@ import {
   SliceCard,
   TiltBoard,
   TiltBoardItem,
-  CardStack
+  CardStack,
+  LiquidDistortionCursor
 } from '../../src/index.js'
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
   // Panel hover states for cursor overlays
   const [isHoveringBoundaryPanel, setIsHoveringBoundaryPanel] = useState(false);
   const [isHoveringPlayPausePanel, setIsHoveringPlayPausePanel] = useState(false);
+  const [isHoveringLiquidDistortionPanel, setIsHoveringLiquidDistortionPanel] = useState(false);
 
   // --- States for Customization Properties ---
   // 1. Liquid Trail
@@ -40,6 +42,12 @@ function App() {
   const [liquidBlur, setLiquidBlur] = useState(15);
   const [liquidBuoyancy, setLiquidBuoyancy] = useState(0.5);
   const [liquidTurbulence, setLiquidTurbulence] = useState(1.0);
+
+  // 1b. Liquid Distortion Cursor
+  const [liquidDistortionRadius, setLiquidDistortionRadius] = useState(200);
+  const [liquidDistortionAmount, setLiquidDistortionAmount] = useState(25);
+  const [liquidDistortionFreq, setLiquidDistortionFreq] = useState(0.015);
+  const [liquidDistortionSpeed, setLiquidDistortionSpeed] = useState(8);
 
   // 2. Boundary Snapping
   const [boundaryColor, setBoundaryColor] = useState('#d90429');
@@ -144,6 +152,15 @@ function App() {
           defaultSize={20}
           pillWidth={videoPillWidth}
           pillHeight={videoPillHeight}
+        />
+      )}
+
+      {activeCategory === 'cursors' && isHoveringLiquidDistortionPanel && (
+        <LiquidDistortionCursor
+          radius={liquidDistortionRadius}
+          distortionAmount={liquidDistortionAmount}
+          baseFrequency={liquidDistortionFreq}
+          speed={liquidDistortionSpeed}
         />
       )}
 
@@ -296,6 +313,37 @@ function App() {
                 <div className="control-group">
                   <label>Pill Color</label>
                   <input type="color" value={videoColor} onChange={e => setVideoColor(e.target.value)} />
+                </div>
+              </div>
+            </div>
+
+            {/* Panel 3b: Liquid Distortion */}
+            <div className="panel-card">
+              <div 
+                className="panel"
+                onMouseEnter={() => setIsHoveringLiquidDistortionPanel(true)}
+                onMouseLeave={() => setIsHoveringLiquidDistortionPanel(false)}
+                style={{ overflow: 'hidden' }}
+              >
+                <h2 className="panel-title">4. Liquid Distortion</h2>
+                <p className="panel-desc">SVG backdrop filter that warps DOM text and images like a magnifying liquid drop.</p>
+                <div style={{ zIndex: 10, padding: '2rem', background: 'linear-gradient(45deg, #18181b, #27272a)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <h3 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem', color: '#fff' }}>HOVER ME</h3>
+                  <p style={{ color: '#a1a1aa' }}>Watch the text refract!</p>
+                </div>
+              </div>
+              <div className="panel-controls">
+                <div className="control-group">
+                  <label>Lens Radius: {liquidDistortionRadius}px</label>
+                  <input type="range" min="100" max="400" value={liquidDistortionRadius} onChange={e => setLiquidDistortionRadius(Number(e.target.value))} />
+                </div>
+                <div className="control-group">
+                  <label>Distortion Amount: {liquidDistortionAmount}</label>
+                  <input type="range" min="5" max="100" value={liquidDistortionAmount} onChange={e => setLiquidDistortionAmount(Number(e.target.value))} />
+                </div>
+                <div className="control-group">
+                  <label>Wave Scale: {liquidDistortionFreq.toFixed(3)}</label>
+                  <input type="range" min="0.005" max="0.05" step="0.001" value={liquidDistortionFreq} onChange={e => setLiquidDistortionFreq(Number(e.target.value))} />
                 </div>
               </div>
             </div>
