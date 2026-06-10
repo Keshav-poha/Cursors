@@ -1,6 +1,6 @@
 {
   "name": "lite-cursor-effects",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Extremely lightweight React cursor effects (0 dependencies other than React)",
   "source": "src/index.js",
   "main": "dist/index.js",
