@@ -23,7 +23,8 @@ import {
   TiltBoard,
   TiltBoardItem,
   CardStack,
-  LiquidDistortionCursor
+  LiquidDistortionCursor,
+  TextRingCursor
 } from '../../src/index.js'
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
   const [isHoveringBoundaryPanel, setIsHoveringBoundaryPanel] = useState(false);
   const [isHoveringPlayPausePanel, setIsHoveringPlayPausePanel] = useState(false);
   const [isHoveringLiquidDistortionPanel, setIsHoveringLiquidDistortionPanel] = useState(false);
+  const [isHoveringTextRingPanel, setIsHoveringTextRingPanel] = useState(false);
 
   // --- States for Customization Properties ---
   // 1. Liquid Trail
@@ -48,6 +50,12 @@ function App() {
   const [liquidDistortionAmount, setLiquidDistortionAmount] = useState(25);
   const [liquidDistortionFreq, setLiquidDistortionFreq] = useState(0.015);
   const [liquidDistortionSpeed, setLiquidDistortionSpeed] = useState(8);
+
+  // 1c. Text Ring Cursor
+  const [textRingText, setTextRingText] = useState("LITE CURSOR EFFECTS • SCROLL DOWN • ");
+  const [textRingRadius, setTextRingRadius] = useState(50);
+  const [textRingColor, setTextRingColor] = useState("#ffffff");
+  const [textRingDamping, setTextRingDamping] = useState(0.15);
 
   // 2. Boundary Snapping
   const [boundaryColor, setBoundaryColor] = useState('#d90429');
@@ -161,6 +169,15 @@ function App() {
           distortionAmount={liquidDistortionAmount}
           baseFrequency={liquidDistortionFreq}
           speed={liquidDistortionSpeed}
+        />
+      )}
+
+      {activeCategory === 'cursors' && isHoveringTextRingPanel && (
+        <TextRingCursor
+          text={textRingText}
+          radius={textRingRadius}
+          color={textRingColor}
+          damping={textRingDamping}
         />
       )}
 
@@ -344,6 +361,41 @@ function App() {
                 <div className="control-group">
                   <label>Wave Scale: {liquidDistortionFreq.toFixed(3)}</label>
                   <input type="range" min="0.005" max="0.05" step="0.001" value={liquidDistortionFreq} onChange={e => setLiquidDistortionFreq(Number(e.target.value))} />
+                </div>
+              </div>
+            </div>
+
+            {/* Panel 3c: Text Ring */}
+            <div className="panel-card">
+              <div 
+                className="panel"
+                onMouseEnter={() => setIsHoveringTextRingPanel(true)}
+                onMouseLeave={() => setIsHoveringTextRingPanel(false)}
+              >
+                <h2 className="panel-title">5. Text Ring Cursor</h2>
+                <p className="panel-desc">A spinning SVG text ring that smoothly trails your pointer using physics.</p>
+                <div style={{ zIndex: 10 }}>
+                  <div style={{ padding: '1rem 2rem', background: 'rgba(255,255,255,0.05)', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    Move Cursor Around
+                  </div>
+                </div>
+              </div>
+              <div className="panel-controls">
+                <div className="control-group">
+                  <label>Ring Text</label>
+                  <input type="text" value={textRingText} onChange={e => setTextRingText(e.target.value)} style={{ width: '100%', padding: '0.5rem', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', borderRadius: '4px' }} />
+                </div>
+                <div className="control-group">
+                  <label>Radius: {textRingRadius}px</label>
+                  <input type="range" min="30" max="120" value={textRingRadius} onChange={e => setTextRingRadius(Number(e.target.value))} />
+                </div>
+                <div className="control-group">
+                  <label>Interpolation Damping: {textRingDamping.toFixed(2)}</label>
+                  <input type="range" min="0.05" max="0.5" step="0.01" value={textRingDamping} onChange={e => setTextRingDamping(Number(e.target.value))} />
+                </div>
+                <div className="control-group">
+                  <label>Text Color</label>
+                  <input type="color" value={textRingColor} onChange={e => setTextRingColor(e.target.value)} />
                 </div>
               </div>
             </div>

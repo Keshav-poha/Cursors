@@ -21,3 +21,4 @@ export { CardStack } from './CardStack';
 export { useMagnetic } from './hooks/useMagnetic';
 export { useTilt } from './hooks/useTilt';
 export { LiquidDistortionCursor } from './LiquidDistortionCursor';
+export { TextRingCursor } from './TextRingCursor';

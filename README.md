@@ -225,6 +225,19 @@ function App() {
 | `speed` | `number` | `8` | Animation duration of the liquid loop (seconds) |
 | `zIndex` | `number` | `9999` | Z-index of the cursor overlay |
 
+### `<TextRingCursor />`
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `text` | `string` | `"LITE CURSOR EFFECTS • SCROLL DOWN • "` | Text string to render in the circular path |
+| `radius` | `number` | `50` | Radius of the text circle |
+| `color` | `string` | `"#ffffff"` | Color of the text |
+| `damping` | `number` | `0.15` | Interpolation speed for mouse trailing |
+| `rotationSpeed` | `number` | `8` | Time in seconds for one full 360° rotation |
+| `fontSize` | `number` | `12` | Font size of the text |
+| `fontWeight` | `number/string` | `600` | Font weight |
+| `letterSpacing`| `string` | `"0.15em"` | Letter spacing for the text |
+| `zIndex` | `number` | `9999` | Z-index of the cursor overlay |
+
 ### `<BoundaryCursor />`
 | Prop | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
