@@ -24,7 +24,8 @@ import {
   TiltBoardItem,
   CardStack,
   LiquidDistortionCursor,
-  TextRingCursor
+  TextRingCursor,
+  BlendDifferenceCursor
 } from '../../src/index.js'
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
   const [isHoveringPlayPausePanel, setIsHoveringPlayPausePanel] = useState(false);
   const [isHoveringLiquidDistortionPanel, setIsHoveringLiquidDistortionPanel] = useState(false);
   const [isHoveringTextRingPanel, setIsHoveringTextRingPanel] = useState(false);
+  const [isHoveringBlendPanel, setIsHoveringBlendPanel] = useState(false);
 
   // --- States for Customization Properties ---
   // 1. Liquid Trail
@@ -56,6 +58,10 @@ function App() {
   const [textRingRadius, setTextRingRadius] = useState(50);
   const [textRingColor, setTextRingColor] = useState("#ffffff");
   const [textRingDamping, setTextRingDamping] = useState(0.15);
+
+  // 1d. Blend Difference Cursor
+  const [blendRadius, setBlendRadius] = useState(20);
+  const [blendDamping, setBlendDamping] = useState(0.2);
 
   // 2. Boundary Snapping
   const [boundaryColor, setBoundaryColor] = useState('#d90429');
@@ -178,6 +184,13 @@ function App() {
           radius={textRingRadius}
           color={textRingColor}
           damping={textRingDamping}
+        />
+      )}
+
+      {activeCategory === 'cursors' && isHoveringBlendPanel && (
+        <BlendDifferenceCursor
+          radius={blendRadius}
+          damping={blendDamping}
         />
       )}
 
@@ -396,6 +409,35 @@ function App() {
                 <div className="control-group">
                   <label>Text Color</label>
                   <input type="color" value={textRingColor} onChange={e => setTextRingColor(e.target.value)} />
+                </div>
+              </div>
+            </div>
+
+            {/* Panel 3d: Blend Difference */}
+            <div className="panel-card">
+              <div 
+                className="panel"
+                onMouseEnter={() => setIsHoveringBlendPanel(true)}
+                onMouseLeave={() => setIsHoveringBlendPanel(false)}
+                style={{ background: '#ffffff', color: '#000000' }}
+              >
+                <h2 className="panel-title" style={{ color: '#000000' }}>6. Blend Difference Cursor</h2>
+                <p className="panel-desc" style={{ color: '#333333' }}>Inverts the colors of whatever it hovers over using blend modes.</p>
+                <div style={{ zIndex: 10 }}>
+                  <div style={{ display: 'flex', gap: '1rem' }}>
+                    <div style={{ padding: '2rem', background: '#000000', color: '#ffffff', borderRadius: '8px', fontWeight: 800 }}>BLACK BOX</div>
+                    <div style={{ padding: '2rem', background: '#d90429', color: '#ffffff', borderRadius: '8px', fontWeight: 800 }}>RED BOX</div>
+                  </div>
+                </div>
+              </div>
+              <div className="panel-controls">
+                <div className="control-group">
+                  <label>Radius: {blendRadius}px</label>
+                  <input type="range" min="10" max="60" value={blendRadius} onChange={e => setBlendRadius(Number(e.target.value))} />
+                </div>
+                <div className="control-group">
+                  <label>Interpolation Damping: {blendDamping.toFixed(2)}</label>
+                  <input type="range" min="0.05" max="0.5" step="0.01" value={blendDamping} onChange={e => setBlendDamping(Number(e.target.value))} />
                 </div>
               </div>
             </div>

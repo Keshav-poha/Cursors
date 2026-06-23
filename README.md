@@ -238,6 +238,13 @@ function App() {
 | `letterSpacing`| `string` | `"0.15em"` | Letter spacing for the text |
 | `zIndex` | `number` | `9999` | Z-index of the cursor overlay |
 
+### `<BlendDifferenceCursor />`
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `radius` | `number` | `20` | Radius of the blending circle |
+| `damping` | `number` | `0.2` | Interpolation speed for mouse trailing |
+| `zIndex` | `number` | `9999` | Z-index of the cursor overlay |
+
 ### `<BoundaryCursor />`
 | Prop | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
