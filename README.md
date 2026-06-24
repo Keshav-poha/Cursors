@@ -245,6 +245,14 @@ function App() {
 | `damping` | `number` | `0.2` | Interpolation speed for mouse trailing |
 | `zIndex` | `number` | `9999` | Z-index of the cursor overlay |
 
+### `<GhostCursor />`
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `radius` | `number` | `12` | Base radius of the fading cursor |
+| `ghosts` | `number` | `4` | Number of trailing ghost particles |
+| `color` | `string` | `"#ffffff"` | Hex/RGB color of the cursor trail |
+| `zIndex` | `number` | `9999` | Z-index of the cursor overlay |
+
 ### `<BoundaryCursor />`
 | Prop | Type | Default | Description |
 | :--- | :--- | :--- | :--- |

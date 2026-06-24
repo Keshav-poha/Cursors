@@ -25,7 +25,8 @@ import {
   CardStack,
   LiquidDistortionCursor,
   TextRingCursor,
-  BlendDifferenceCursor
+  BlendDifferenceCursor,
+  GhostCursor
 } from '../../src/index.js'
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
   const [isHoveringLiquidDistortionPanel, setIsHoveringLiquidDistortionPanel] = useState(false);
   const [isHoveringTextRingPanel, setIsHoveringTextRingPanel] = useState(false);
   const [isHoveringBlendPanel, setIsHoveringBlendPanel] = useState(false);
+  const [isHoveringGhostPanel, setIsHoveringGhostPanel] = useState(false);
 
   // --- States for Customization Properties ---
   // 1. Liquid Trail
@@ -62,6 +64,11 @@ function App() {
   // 1d. Blend Difference Cursor
   const [blendRadius, setBlendRadius] = useState(20);
   const [blendDamping, setBlendDamping] = useState(0.2);
+
+  // 1e. Ghost Cursor
+  const [ghostRadius, setGhostRadius] = useState(12);
+  const [ghostCount, setGhostCount] = useState(4);
+  const [ghostColor, setGhostColor] = useState("#d90429");
 
   // 2. Boundary Snapping
   const [boundaryColor, setBoundaryColor] = useState('#d90429');
@@ -191,6 +198,14 @@ function App() {
         <BlendDifferenceCursor
           radius={blendRadius}
           damping={blendDamping}
+        />
+      )}
+
+      {activeCategory === 'cursors' && isHoveringGhostPanel && (
+        <GhostCursor
+          radius={ghostRadius}
+          ghosts={ghostCount}
+          color={ghostColor}
         />
       )}
 
@@ -438,6 +453,37 @@ function App() {
                 <div className="control-group">
                   <label>Interpolation Damping: {blendDamping.toFixed(2)}</label>
                   <input type="range" min="0.05" max="0.5" step="0.01" value={blendDamping} onChange={e => setBlendDamping(Number(e.target.value))} />
+                </div>
+              </div>
+            </div>
+
+            {/* Panel 3e: Ghost Trail Cursor */}
+            <div className="panel-card">
+              <div 
+                className="panel"
+                onMouseEnter={() => setIsHoveringGhostPanel(true)}
+                onMouseLeave={() => setIsHoveringGhostPanel(false)}
+              >
+                <h2 className="panel-title">7. Fading Ghost Trail</h2>
+                <p className="panel-desc">Leaves a fading trail of opaque ghost cursors that shrink and follow velocity.</p>
+                <div style={{ zIndex: 10 }}>
+                  <div style={{ padding: '1rem 2rem', background: 'rgba(255,255,255,0.05)', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    Shake Pointer
+                  </div>
+                </div>
+              </div>
+              <div className="panel-controls">
+                <div className="control-group">
+                  <label>Base Radius: {ghostRadius}px</label>
+                  <input type="range" min="5" max="30" value={ghostRadius} onChange={e => setGhostRadius(Number(e.target.value))} />
+                </div>
+                <div className="control-group">
+                  <label>Trailing Ghosts: {ghostCount}</label>
+                  <input type="range" min="2" max="10" value={ghostCount} onChange={e => setGhostCount(Number(e.target.value))} />
+                </div>
+                <div className="control-group">
+                  <label>Trail Color</label>
+                  <input type="color" value={ghostColor} onChange={e => setGhostColor(e.target.value)} />
                 </div>
               </div>
             </div>

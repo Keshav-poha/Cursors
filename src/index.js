@@ -23,3 +23,4 @@ export { useTilt } from './hooks/useTilt';
 export { LiquidDistortionCursor } from './LiquidDistortionCursor';
 export { TextRingCursor } from './TextRingCursor';
 export { BlendDifferenceCursor } from './BlendDifferenceCursor';
+export { GhostCursor } from './GhostCursor';
