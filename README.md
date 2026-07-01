@@ -269,6 +269,18 @@ function App() {
 | `centerDotSize` | `number` | `6` | Size of the center dot (pixels) |
 | `zIndex` | `number` | `99999` | Z-index of the cursor overlay |
 
+### `<ScrollCylinder />`
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `items` | `array` | `[]` | Array of data items to render |
+| `renderItem` | `function` | `undefined` | `(item, index, {isBehind, relativeZ}) => ReactNode` |
+| `mode` | `string` | `"cylinder"` | Display mode: `"cylinder"` or `"helix"` |
+| `radius` | `number` | `200` | Radius of the 3D scroll orbit |
+| `scrollSensitivity` | `number` | `0.5` | How fast the cylinder spins on scroll |
+| `gap` | `number` | `40` | Vertical gap between items (used in `"helix"` mode) |
+| `containerHeight` | `string` | `"200vh"` | CSS height of the scrollable wrapper |
+| `zIndex` | `number` | `10` | Z-index of the wrapper |
+
 ### `<BoundaryCursor />`
 | Prop | Type | Default | Description |
 | :--- | :--- | :--- | :--- |

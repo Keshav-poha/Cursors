@@ -27,7 +27,8 @@ import {
   TextRingCursor,
   BlendDifferenceCursor,
   GhostCursor,
-  CylinderHelixCursor
+  CylinderHelixCursor,
+  ScrollCylinder
 } from '../../src/index.js'
 
 function App() {
@@ -153,9 +154,15 @@ function App() {
   const [boardLift, setBoardLift] = useState(20);
 
   // 20. Card Stack
-  const [stackFan, setStackFan] = useState(45);
-  const [stackLift, setStackLift] = useState(15);
-  const [stackDepth, setStackDepth] = useState(20);
+  const [stackFan, setStackFan] = useState(50);
+  const [stackLift, setStackLift] = useState(25);
+  const [stackDepth, setStackDepth] = useState(30);
+
+  // 21. Scroll Cylinder
+  const [scrollCylMode, setScrollCylMode] = useState('cylinder');
+  const [scrollCylRadius, setScrollCylRadius] = useState(300);
+  const [scrollCylSens, setScrollCylSens] = useState(0.8);
+  const [scrollCylGap, setScrollCylGap] = useState(80);
 
   const toggleVideo = () => {
     const nextState = !isPlaying;
@@ -1196,6 +1203,91 @@ function App() {
                   <label>Z Separation Spacing: {stackDepth}px</label>
                   <input type="range" min="5" max="55" value={stackDepth} onChange={e => setStackDepth(Number(e.target.value))} />
                 </div>
+              </div>
+            </div>
+
+            {/* Panel 21: Scroll Cylinder (Takes up vertical space to demonstrate scroll) */}
+            <div className="panel-card" style={{ gridColumn: '1 / -1' }}>
+              <div className="panel" style={{ padding: '0', background: 'transparent', border: 'none' }}>
+                <div style={{ background: '#18181b', padding: '2rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '1rem' }}>
+                  <h2 className="panel-title">21. Scroll-Driven Cylinder/Helix</h2>
+                  <p className="panel-desc">A layout component that binds rotation to the window scroll position. (Keep scrolling down to see it spin!)</p>
+                  <div className="panel-controls" style={{ marginTop: '1rem', background: 'transparent' }}>
+                    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                      <div className="control-group" style={{ flex: 1, minWidth: '150px' }}>
+                        <label>Mode</label>
+                        <select value={scrollCylMode} onChange={e => setScrollCylMode(e.target.value)} style={{ width: '100%', padding: '0.5rem', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', borderRadius: '4px' }}>
+                          <option value="cylinder" style={{ background: '#111' }}>Cylinder</option>
+                          <option value="helix" style={{ background: '#111' }}>Helix</option>
+                        </select>
+                      </div>
+                      <div className="control-group" style={{ flex: 1, minWidth: '150px' }}>
+                        <label>Radius: {scrollCylRadius}px</label>
+                        <input type="range" min="150" max="600" value={scrollCylRadius} onChange={e => setScrollCylRadius(Number(e.target.value))} />
+                      </div>
+                      <div className="control-group" style={{ flex: 1, minWidth: '150px' }}>
+                        <label>Scroll Sensitivity: {scrollCylSens.toFixed(1)}</label>
+                        <input type="range" min="0.1" max="2" step="0.1" value={scrollCylSens} onChange={e => setScrollCylSens(Number(e.target.value))} />
+                      </div>
+                      {scrollCylMode === 'helix' && (
+                        <div className="control-group" style={{ flex: 1, minWidth: '150px' }}>
+                          <label>Vertical Gap: {scrollCylGap}px</label>
+                          <input type="range" min="20" max="150" value={scrollCylGap} onChange={e => setScrollCylGap(Number(e.target.value))} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <ScrollCylinder
+                  items={[
+                    { title: "React", desc: "A JavaScript library for building user interfaces" },
+                    { title: "Three.js", desc: "3D library that makes WebGL simpler" },
+                    { title: "Framer Motion", desc: "Production-ready motion library for React" },
+                    { title: "GSAP", desc: "Professional-grade animation for the modern web" },
+                    { title: "Tailwind", desc: "A utility-first CSS framework" },
+                    { title: "Vite", desc: "Next Generation Frontend Tooling" },
+                    { title: "Next.js", desc: "The React Framework for the Web" },
+                    { title: "Zustand", desc: "Bear necessities for state management" }
+                  ]}
+                  mode={scrollCylMode}
+                  radius={scrollCylRadius}
+                  scrollSensitivity={scrollCylSens}
+                  gap={scrollCylGap}
+                  containerHeight="250vh"
+                  renderItem={(item, index, { isBehind }) => (
+                    <div style={{
+                      width: '240px',
+                      height: '140px',
+                      background: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '16px',
+                      padding: '1.5rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      backdropFilter: 'blur(10px)',
+                      color: isBehind ? '#666' : '#fff',
+                      boxShadow: isBehind ? 'none' : '0 10px 30px rgba(0,0,0,0.5)',
+                      transition: 'all 0.3s ease',
+                      cursor: isBehind ? 'default' : 'pointer'
+                    }}>
+                      <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.2rem', fontWeight: 700, color: isBehind ? '#555' : '#d90429' }}>
+                        {item.title}
+                      </h3>
+                      <p style={{ margin: 0, fontSize: '0.85rem', lineHeight: '1.4' }}>
+                        {item.desc}
+                      </p>
+                      {!isBehind && (
+                        <button style={{ marginTop: '1rem', padding: '0.4rem 1rem', background: '#d90429', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.75rem' }} onClick={() => alert(`Clicked on ${item.title}!`)}>
+                          INTERACT
+                        </button>
+                      )}
+                    </div>
+                  )}
+                />
               </div>
             </div>
           </>

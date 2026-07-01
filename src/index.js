@@ -25,4 +25,5 @@ export { TextRingCursor } from './TextRingCursor';
 export { BlendDifferenceCursor } from './BlendDifferenceCursor';
 export { GhostCursor } from './GhostCursor';
 export { CylinderHelixCursor } from './CylinderHelixCursor';
+export { ScrollCylinder } from './ScrollCylinder';
 
