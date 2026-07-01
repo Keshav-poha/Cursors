@@ -163,6 +163,7 @@ function App() {
   const [scrollCylRadius, setScrollCylRadius] = useState(95);
   const [scrollCylSens, setScrollCylSens] = useState(0.08);
   const [scrollCylGap, setScrollCylGap] = useState(45);
+  const [scrollCylDamping, setScrollCylDamping] = useState(0.08);
 
   const toggleVideo = () => {
     const nextState = !isPlaying;
@@ -1231,6 +1232,7 @@ function App() {
                     radius={scrollCylRadius}
                     scrollSensitivity={scrollCylSens}
                     gap={scrollCylGap}
+                    damping={scrollCylDamping}
                     scrollTarget="wheel"
                     renderItem={(item, index, { isBehind }) => (
                       <div style={{
@@ -1266,13 +1268,17 @@ function App() {
                     <label>Sensitivity: {scrollCylSens.toFixed(2)}</label>
                     <input type="range" min="0.01" max="0.3" step="0.01" value={scrollCylSens} onChange={e => setScrollCylSens(Number(e.target.value))} />
                   </div>
-                  {scrollCylMode === 'helix' && (
-                    <div className="control-group" style={{ flex: 1 }}>
-                      <label>Gap: {scrollCylGap}px</label>
-                      <input type="range" min="10" max="80" value={scrollCylGap} onChange={e => setScrollCylGap(Number(e.target.value))} />
-                    </div>
-                  )}
+                  <div className="control-group" style={{ flex: 1 }}>
+                    <label>Damping: {scrollCylDamping.toFixed(2)}</label>
+                    <input type="range" min="0.01" max="0.3" step="0.01" value={scrollCylDamping} onChange={e => setScrollCylDamping(Number(e.target.value))} />
+                  </div>
                 </div>
+                {scrollCylMode === 'helix' && (
+                  <div className="control-group">
+                    <label>Gap: {scrollCylGap}px</label>
+                    <input type="range" min="10" max="80" value={scrollCylGap} onChange={e => setScrollCylGap(Number(e.target.value))} />
+                  </div>
+                )}
               </div>
             </div>
           </>

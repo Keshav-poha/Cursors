@@ -8,6 +8,7 @@ export function ScrollCylinder({
   radius = 200,
   scrollSensitivity = 0.1, // Adjusted default for wheel delta
   gap = 40,
+  damping = 0.1, // Damping factor for smooth scroll (0.1 = smooth, 1.0 = instant)
   containerHeight = '250vh', // height of the scrollable area for window/container mode
   viewportHeight = '100vh', // height of the visible sticky area
   scrollTarget = 'window', // 'window' | 'container' | 'wheel'
@@ -18,20 +19,38 @@ export function ScrollCylinder({
   const [rotation, setRotation] = useState(0);
   const prefersReducedMotion = usePrefersReducedMotion();
 
+  const targetRotation = useRef(0);
+  const currentRotation = useRef(0);
+  const requestRef = useRef();
+
   useEffect(() => {
     if (prefersReducedMotion) return;
+
+    const updateLoop = () => {
+      // Lerp current rotation to target rotation
+      const diff = targetRotation.current - currentRotation.current;
+      currentRotation.current += diff * damping;
+      
+      setRotation(currentRotation.current);
+      requestRef.current = requestAnimationFrame(updateLoop);
+    };
+
+    requestRef.current = requestAnimationFrame(updateLoop);
 
     if (scrollTarget === 'window') {
       const handleScroll = () => {
         if (!containerRef.current) return;
         const rect = containerRef.current.getBoundingClientRect();
         const scrollProgress = -rect.top;
-        setRotation(scrollProgress * scrollSensitivity);
+        targetRotation.current = scrollProgress * scrollSensitivity;
       };
 
       window.addEventListener('scroll', handleScroll, { passive: true });
       handleScroll();
-      return () => window.removeEventListener('scroll', handleScroll);
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+        if (requestRef.current) cancelAnimationFrame(requestRef.current);
+      };
     } else if (scrollTarget === 'wheel') {
       const handleWheel = (e) => {
         if (!containerRef.current) return;
@@ -39,8 +58,8 @@ export function ScrollCylinder({
         // Prevent default page scroll
         e.preventDefault();
         
-        // Update rotation incrementally
-        setRotation((prev) => prev + e.deltaY * scrollSensitivity);
+        // Increment target rotation
+        targetRotation.current += e.deltaY * scrollSensitivity;
       };
 
       const container = containerRef.current;
@@ -51,14 +70,19 @@ export function ScrollCylinder({
         if (container) {
           container.removeEventListener('wheel', handleWheel);
         }
+        if (requestRef.current) cancelAnimationFrame(requestRef.current);
       };
     }
-  }, [prefersReducedMotion, scrollSensitivity, scrollTarget]);
+
+    return () => {
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    };
+  }, [prefersReducedMotion, scrollSensitivity, scrollTarget, damping]);
 
   const handleContainerScroll = (e) => {
     if (scrollTarget === 'container') {
       const scrollProgress = e.target.scrollTop;
-      setRotation(scrollProgress * scrollSensitivity);
+      targetRotation.current = scrollProgress * scrollSensitivity;
     }
   };
 
