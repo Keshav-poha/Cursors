@@ -26,7 +26,8 @@ import {
   LiquidDistortionCursor,
   TextRingCursor,
   BlendDifferenceCursor,
-  GhostCursor
+  GhostCursor,
+  CylinderHelixCursor
 } from '../../src/index.js'
 
 function App() {
@@ -69,6 +70,16 @@ function App() {
   const [ghostRadius, setGhostRadius] = useState(12);
   const [ghostCount, setGhostCount] = useState(4);
   const [ghostColor, setGhostColor] = useState("#d90429");
+
+  // 1f. Cylinder/Helix Cursor
+  const [isHoveringCylinderHelixPanel, setIsHoveringCylinderHelixPanel] = useState(false);
+  const [cylinderHelixMode, setCylinderHelixMode] = useState('cylinder');
+  const [cylinderHelixRadius, setCylinderHelixRadius] = useState(80);
+  const [cylinderHelixSpeed, setCylinderHelixSpeed] = useState(1.5);
+  const [cylinderHelixGap, setCylinderHelixGap] = useState(22);
+  const [cylinderHelixItemSize, setCylinderHelixItemSize] = useState(38);
+  const [cylinderHelixDamping, setCylinderHelixDamping] = useState(0.12);
+  const [cylinderHelixColor, setCylinderHelixColor] = useState('#d90429');
 
   // 2. Boundary Snapping
   const [boundaryColor, setBoundaryColor] = useState('#d90429');
@@ -206,6 +217,18 @@ function App() {
           radius={ghostRadius}
           ghosts={ghostCount}
           color={ghostColor}
+        />
+      )}
+
+      {activeCategory === 'cursors' && isHoveringCylinderHelixPanel && (
+        <CylinderHelixCursor
+          mode={cylinderHelixMode}
+          radius={cylinderHelixRadius}
+          rotationSpeed={cylinderHelixSpeed}
+          gap={cylinderHelixGap}
+          itemSize={cylinderHelixItemSize}
+          damping={cylinderHelixDamping}
+          glowColor={cylinderHelixColor}
         />
       )}
 
@@ -484,6 +507,62 @@ function App() {
                 <div className="control-group">
                   <label>Trail Color</label>
                   <input type="color" value={ghostColor} onChange={e => setGhostColor(e.target.value)} />
+                </div>
+              </div>
+            </div>
+
+            {/* Panel 3f: Cylinder / Helix Orbit Cursor */}
+            <div className="panel-card">
+              <div 
+                className="panel"
+                onMouseEnter={() => setIsHoveringCylinderHelixPanel(true)}
+                onMouseLeave={() => setIsHoveringCylinderHelixPanel(false)}
+              >
+                <h2 className="panel-title">8. 3D Project Cylinder/Helix</h2>
+                <p className="panel-desc">A 3D cylinder or spiral helix of project logos revolving and trailing your pointer.</p>
+                <div style={{ zIndex: 10 }}>
+                  <div style={{ padding: '1rem 2rem', background: 'rgba(255,255,255,0.05)', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    Hover & Move Around
+                  </div>
+                </div>
+              </div>
+              <div className="panel-controls">
+                <div className="control-group">
+                  <label>Mode</label>
+                  <select 
+                    value={cylinderHelixMode} 
+                    onChange={e => setCylinderHelixMode(e.target.value)}
+                    style={{ width: '100%', padding: '0.5rem', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', borderRadius: '4px' }}
+                  >
+                    <option value="cylinder" style={{ background: '#111' }}>Cylinder</option>
+                    <option value="helix" style={{ background: '#111' }}>Helix</option>
+                  </select>
+                </div>
+                <div className="control-group">
+                  <label>Radius: {cylinderHelixRadius}px</label>
+                  <input type="range" min="40" max="150" value={cylinderHelixRadius} onChange={e => setCylinderHelixRadius(Number(e.target.value))} />
+                </div>
+                <div className="control-group">
+                  <label>Spin Speed: {cylinderHelixSpeed.toFixed(1)}</label>
+                  <input type="range" min="0" max="4" step="0.1" value={cylinderHelixSpeed} onChange={e => setCylinderHelixSpeed(Number(e.target.value))} />
+                </div>
+                {cylinderHelixMode === 'helix' && (
+                  <div className="control-group">
+                    <label>Helix Gap: {cylinderHelixGap}px</label>
+                    <input type="range" min="10" max="40" value={cylinderHelixGap} onChange={e => setCylinderHelixGap(Number(e.target.value))} />
+                  </div>
+                )}
+                <div className="control-group">
+                  <label>Item Size: {cylinderHelixItemSize}px</label>
+                  <input type="range" min="20" max="60" value={cylinderHelixItemSize} onChange={e => setCylinderHelixItemSize(Number(e.target.value))} />
+                </div>
+                <div className="control-group">
+                  <label>Interpolation Damping: {cylinderHelixDamping.toFixed(2)}</label>
+                  <input type="range" min="0.05" max="0.3" step="0.01" value={cylinderHelixDamping} onChange={e => setCylinderHelixDamping(Number(e.target.value))} />
+                </div>
+                <div className="control-group">
+                  <label>Glow Color</label>
+                  <input type="color" value={cylinderHelixColor} onChange={e => setCylinderHelixColor(e.target.value)} />
                 </div>
               </div>
             </div>

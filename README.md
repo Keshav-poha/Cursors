@@ -253,6 +253,22 @@ function App() {
 | `color` | `string` | `"#ffffff"` | Hex/RGB color of the cursor trail |
 | `zIndex` | `number` | `9999` | Z-index of the cursor overlay |
 
+### `<CylinderHelixCursor />`
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `items` | `array` | `DEFAULT_ITEMS` | Array of objects `{ name, logo }` for the orbiting elements |
+| `mode` | `string` | `"cylinder"` | Display mode: `"cylinder"` or `"helix"` |
+| `radius` | `number` | `80` | Radius of the 3D orbit |
+| `rotationSpeed` | `number` | `1.5` | Base rotation speed multiplier |
+| `gap` | `number` | `22` | Vertical gap between items (only used in `"helix"` mode) |
+| `itemSize` | `number` | `38` | Width/Height of each orbiting item (pixels) |
+| `damping` | `number` | `0.12` | Interpolation speed for mouse trailing |
+| `interactive` | `boolean` | `true` | Whether clicking expands radius and speed dynamically |
+| `glowColor` | `string` | `"rgba(217, 4, 41, 0.4)"` | Highlight color for front elements |
+| `showCenterDot` | `boolean` | `true` | Whether to render the center tracking dot |
+| `centerDotSize` | `number` | `6` | Size of the center dot (pixels) |
+| `zIndex` | `number` | `99999` | Z-index of the cursor overlay |
+
 ### `<BoundaryCursor />`
 | Prop | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
