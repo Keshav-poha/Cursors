@@ -1207,9 +1207,9 @@ function App() {
             </div>
 
             {/* Panel 21: Scroll Cylinder (Takes up vertical space to demonstrate scroll) */}
-            <div className="panel-card" style={{ gridColumn: '1 / -1' }}>
-              <div className="panel" style={{ padding: '0', background: 'transparent', border: 'none' }}>
-                <div style={{ background: '#18181b', padding: '2rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '1rem' }}>
+            <div className="panel-card" style={{ gridColumn: '1 / -1', overflow: 'visible' }}>
+              <div className="panel" style={{ padding: '0', background: 'transparent', border: 'none', overflow: 'visible', height: 'auto' }}>
+                <div style={{ background: '#18181b', padding: '2rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '1rem', position: 'relative', zIndex: 100 }}>
                   <h2 className="panel-title">21. Scroll-Driven Cylinder/Helix</h2>
                   <p className="panel-desc">A layout component that binds rotation to the window scroll position. (Keep scrolling down to see it spin!)</p>
                   <div className="panel-controls" style={{ marginTop: '1rem', background: 'transparent' }}>
