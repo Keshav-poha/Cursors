@@ -8,7 +8,7 @@ export function ScrollCylinder({
   radius = 200,
   scrollSensitivity = 0.5,
   gap = 40,
-  containerHeight = '200vh',
+  containerHeight = '250vh',
   className = '',
   zIndex = 10
 }) {
@@ -24,13 +24,11 @@ export function ScrollCylinder({
       const rect = containerRef.current.getBoundingClientRect();
       
       // Calculate how far into the container we have scrolled.
-      // When rect.top === 0, the container is exactly at the top of the viewport.
+      // When rect.top === 0, the container is at the top of the viewport.
       const scrollProgress = -rect.top;
       
-      // We only rotate if the container is currently in or above the viewport
-      if (rect.top <= window.innerHeight && rect.bottom >= 0) {
-        setRotation(scrollProgress * scrollSensitivity);
-      }
+      // Update rotation globally
+      setRotation(scrollProgress * scrollSensitivity);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -40,6 +38,7 @@ export function ScrollCylinder({
   }, [prefersReducedMotion, scrollSensitivity]);
 
   const N = items.length;
+  const angleStep = 360 / N;
 
   return (
     <div
@@ -47,6 +46,7 @@ export function ScrollCylinder({
       className={className}
       style={{
         position: 'relative',
+        width: '100%',
         height: prefersReducedMotion ? 'auto' : containerHeight,
         zIndex: zIndex
       }}
@@ -55,8 +55,9 @@ export function ScrollCylinder({
         style={{
           position: prefersReducedMotion ? 'relative' : 'sticky',
           top: 0,
-          height: prefersReducedMotion ? 'auto' : '100vh',
+          left: 0,
           width: '100%',
+          height: prefersReducedMotion ? 'auto' : '100vh',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -67,33 +68,34 @@ export function ScrollCylinder({
         <div
           style={{
             position: 'relative',
-            width: '100%',
-            height: '100%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transformStyle: 'preserve-3d'
+            transformStyle: 'preserve-3d',
+            // The entire cylinder rotates based on scroll
+            transform: `translateZ(${-radius}px) rotateY(${rotation}deg)`
           }}
         >
           {items.map((item, index) => {
-            const itemAngle = (index * (360 / N));
-            const currentAngleRad = ((rotation + itemAngle) * Math.PI) / 180;
-            
-            const tx = Math.sin(currentAngleRad) * radius;
-            const tz = Math.cos(currentAngleRad) * radius;
+            const itemAngle = index * angleStep;
             const ty = mode === 'helix' ? (index - (N - 1) / 2) * gap : 0;
             
-            // Calculate z-depth for scaling and opacity fading
-            const relativeZ = tz / radius; // ranges from -1 to 1
-            const scale = 0.7 + (relativeZ + 1) * 0.15; // scales down items in back
-            const opacity = 0.3 + (relativeZ + 1) * 0.35; // fades items in back
-            const isBehind = tz < 0;
+            // Calculate absolute angle to camera to compute fading and pointer-events
+            const currentAbsoluteAngle = (rotation + itemAngle) % 360;
+            let normalizedAngle = currentAbsoluteAngle;
+            if (normalizedAngle > 180) normalizedAngle -= 360;
+            if (normalizedAngle < -180) normalizedAngle += 360;
+            const absDistance = Math.abs(normalizedAngle);
+
+            // Hide cards that are rotated to the back
+            const opacity = Math.max(0.1, 1 - (absDistance / 180));
+            const isBehind = absDistance > 90;
 
             // Reduce motion fallback: display as a normal list
             if (prefersReducedMotion) {
               return (
                 <div key={index} style={{ marginBottom: '1rem' }}>
-                  {renderItem ? renderItem(item, index) : null}
+                  {renderItem ? renderItem(item, index, { isBehind: false, relativeZ: 1 }) : null}
                 </div>
               );
             }
@@ -103,15 +105,14 @@ export function ScrollCylinder({
                 key={index}
                 style={{
                   position: 'absolute',
-                  transform: `translate3d(${tx}px, ${ty}px, ${tz}px) scale(${scale})`,
+                  transform: `rotateY(${itemAngle}deg) translateZ(${radius}px) translateY(${ty}px)`,
                   opacity: opacity,
                   pointerEvents: isBehind ? 'none' : 'auto', // only front items are clickable
-                  transition: 'opacity 0.1s ease, transform 0.1s ease',
-                  transformOrigin: 'center center',
-                  zIndex: isBehind ? 1 : 10
+                  transition: 'opacity 0.2s ease',
+                  transformStyle: 'preserve-3d'
                 }}
               >
-                {renderItem ? renderItem(item, index, { isBehind, relativeZ }) : null}
+                {renderItem ? renderItem(item, index, { isBehind, relativeZ: 1 - (absDistance / 180) }) : null}
               </div>
             );
           })}
