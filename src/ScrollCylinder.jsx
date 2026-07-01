@@ -6,11 +6,11 @@ export function ScrollCylinder({
   renderItem,
   mode = 'cylinder', // 'cylinder' | 'helix'
   radius = 200,
-  scrollSensitivity = 0.5,
+  scrollSensitivity = 0.1, // Adjusted default for wheel delta
   gap = 40,
-  containerHeight = '250vh', // height of the scrollable area
-  viewportHeight = '100vh', // height of the visible sticky area when scrollTarget is 'container'
-  scrollTarget = 'window', // 'window' | 'container'
+  containerHeight = '250vh', // height of the scrollable area for window/container mode
+  viewportHeight = '100vh', // height of the visible sticky area
+  scrollTarget = 'window', // 'window' | 'container' | 'wheel'
   className = '',
   zIndex = 10
 }) {
@@ -19,19 +19,40 @@ export function ScrollCylinder({
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
-    if (prefersReducedMotion || scrollTarget !== 'window') return;
+    if (prefersReducedMotion) return;
 
-    const handleScroll = () => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const scrollProgress = -rect.top;
-      setRotation(scrollProgress * scrollSensitivity);
-    };
+    if (scrollTarget === 'window') {
+      const handleScroll = () => {
+        if (!containerRef.current) return;
+        const rect = containerRef.current.getBoundingClientRect();
+        const scrollProgress = -rect.top;
+        setRotation(scrollProgress * scrollSensitivity);
+      };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      handleScroll();
+      return () => window.removeEventListener('scroll', handleScroll);
+    } else if (scrollTarget === 'wheel') {
+      const handleWheel = (e) => {
+        if (!containerRef.current) return;
+        
+        // Prevent default page scroll
+        e.preventDefault();
+        
+        // Update rotation incrementally
+        setRotation((prev) => prev + e.deltaY * scrollSensitivity);
+      };
 
-    return () => window.removeEventListener('scroll', handleScroll);
+      const container = containerRef.current;
+      if (container) {
+        container.addEventListener('wheel', handleWheel, { passive: false });
+      }
+      return () => {
+        if (container) {
+          container.removeEventListener('wheel', handleWheel);
+        }
+      };
+    }
   }, [prefersReducedMotion, scrollSensitivity, scrollTarget]);
 
   const handleContainerScroll = (e) => {
@@ -44,6 +65,8 @@ export function ScrollCylinder({
   const N = items.length;
   const angleStep = 360 / N;
 
+  const isWheel = scrollTarget === 'wheel';
+
   return (
     <div
       className={className}
@@ -52,14 +75,14 @@ export function ScrollCylinder({
       style={{
         position: 'relative',
         width: '100%',
-        height: scrollTarget === 'container' ? viewportHeight : (prefersReducedMotion ? 'auto' : containerHeight),
-        overflowY: scrollTarget === 'container' ? 'auto' : 'visible',
+        height: isWheel ? '100%' : (scrollTarget === 'container' ? viewportHeight : (prefersReducedMotion ? 'auto' : containerHeight)),
+        overflowY: scrollTarget === 'container' ? 'auto' : 'hidden',
         overflowX: 'hidden',
         zIndex: zIndex
       }}
     >
       {/* Spacer to create scrollable height inside the container if needed */}
-      <div style={{ height: scrollTarget === 'container' ? containerHeight : '100%' }}>
+      {!isWheel && <div style={{ height: scrollTarget === 'container' ? containerHeight : '100%' }}>
         <div
           style={{
             position: prefersReducedMotion ? 'relative' : 'sticky',
@@ -74,60 +97,112 @@ export function ScrollCylinder({
             overflow: 'hidden'
           }}
         >
+          <div
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transformStyle: 'preserve-3d',
+              transform: `translateZ(${-radius}px) rotateY(${rotation}deg)`
+            }}
+          >
+            {items.map((item, index) => {
+              const itemAngle = index * angleStep;
+              const ty = mode === 'helix' ? (index - (N - 1) / 2) * gap : 0;
+              
+              const currentAbsoluteAngle = (rotation + itemAngle) % 360;
+              let normalizedAngle = currentAbsoluteAngle;
+              if (normalizedAngle > 180) normalizedAngle -= 360;
+              if (normalizedAngle < -180) normalizedAngle += 360;
+              const absDistance = Math.abs(normalizedAngle);
+
+              const opacity = Math.max(0.1, 1 - (absDistance / 180));
+              const isBehind = absDistance > 90;
+
+              if (prefersReducedMotion) {
+                return (
+                  <div key={index} style={{ marginBottom: '1rem' }}>
+                    {renderItem ? renderItem(item, index, { isBehind: false, relativeZ: 1 }) : null}
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  key={index}
+                  style={{
+                    position: 'absolute',
+                    transform: `rotateY(${itemAngle}deg) translateZ(${radius}px) translateY(${ty}px)`,
+                    opacity: opacity,
+                    pointerEvents: isBehind ? 'none' : 'auto',
+                    transition: 'opacity 0.2s ease',
+                    transformStyle: 'preserve-3d'
+                  }}
+                >
+                  {renderItem ? renderItem(item, index, { isBehind, relativeZ: 1 - (absDistance / 180) }) : null}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>}
+
+      {isWheel && (
         <div
           style={{
             position: 'relative',
+            width: '100%',
+            height: '100%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transformStyle: 'preserve-3d',
-            // The entire cylinder rotates based on scroll
-            transform: `translateZ(${-radius}px) rotateY(${rotation}deg)`
+            perspective: '1200px',
+            overflow: 'hidden'
           }}
         >
-          {items.map((item, index) => {
-            const itemAngle = index * angleStep;
-            const ty = mode === 'helix' ? (index - (N - 1) / 2) * gap : 0;
-            
-            // Calculate absolute angle to camera to compute fading and pointer-events
-            const currentAbsoluteAngle = (rotation + itemAngle) % 360;
-            let normalizedAngle = currentAbsoluteAngle;
-            if (normalizedAngle > 180) normalizedAngle -= 360;
-            if (normalizedAngle < -180) normalizedAngle += 360;
-            const absDistance = Math.abs(normalizedAngle);
+          <div
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transformStyle: 'preserve-3d',
+              transform: `translateZ(${-radius}px) rotateY(${rotation}deg)`
+            }}
+          >
+            {items.map((item, index) => {
+              const itemAngle = index * angleStep;
+              const ty = mode === 'helix' ? (index - (N - 1) / 2) * gap : 0;
+              
+              const currentAbsoluteAngle = (rotation + itemAngle) % 360;
+              let normalizedAngle = currentAbsoluteAngle;
+              if (normalizedAngle > 180) normalizedAngle -= 360;
+              if (normalizedAngle < -180) normalizedAngle += 360;
+              const absDistance = Math.abs(normalizedAngle);
 
-            // Hide cards that are rotated to the back
-            const opacity = Math.max(0.1, 1 - (absDistance / 180));
-            const isBehind = absDistance > 90;
+              const opacity = Math.max(0.1, 1 - (absDistance / 180));
+              const isBehind = absDistance > 90;
 
-            // Reduce motion fallback: display as a normal list
-            if (prefersReducedMotion) {
               return (
-                <div key={index} style={{ marginBottom: '1rem' }}>
-                  {renderItem ? renderItem(item, index, { isBehind: false, relativeZ: 1 }) : null}
+                <div
+                  key={index}
+                  style={{
+                    position: 'absolute',
+                    transform: `rotateY(${itemAngle}deg) translateZ(${radius}px) translateY(${ty}px)`,
+                    opacity: opacity,
+                    pointerEvents: isBehind ? 'none' : 'auto',
+                    transition: 'opacity 0.2s ease',
+                    transformStyle: 'preserve-3d'
+                  }}
+                >
+                  {renderItem ? renderItem(item, index, { isBehind, relativeZ: 1 - (absDistance / 180) }) : null}
                 </div>
               );
-            }
-
-            return (
-              <div
-                key={index}
-                style={{
-                  position: 'absolute',
-                  transform: `rotateY(${itemAngle}deg) translateZ(${radius}px) translateY(${ty}px)`,
-                  opacity: opacity,
-                  pointerEvents: isBehind ? 'none' : 'auto', // only front items are clickable
-                  transition: 'opacity 0.2s ease',
-                  transformStyle: 'preserve-3d'
-                }}
-              >
-                {renderItem ? renderItem(item, index, { isBehind, relativeZ: 1 - (absDistance / 180) }) : null}
-              </div>
-            );
-          })}
+            })}
+          </div>
         </div>
-      </div>
-      </div>
+      )}
     </div>
   );
 }
