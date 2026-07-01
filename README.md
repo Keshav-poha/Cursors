@@ -278,7 +278,9 @@ function App() {
 | `radius` | `number` | `200` | Radius of the 3D scroll orbit |
 | `scrollSensitivity` | `number` | `0.5` | How fast the cylinder spins on scroll |
 | `gap` | `number` | `40` | Vertical gap between items (used in `"helix"` mode) |
-| `containerHeight` | `string` | `"200vh"` | CSS height of the scrollable wrapper |
+| `containerHeight` | `string` | `"250vh"` | CSS height of the scrollable wrapper |
+| `viewportHeight` | `string` | `"100vh"` | CSS height of the sticky area when scrollTarget is `"container"` |
+| `scrollTarget` | `string` | `"window"` | `"window"` (binds to window scroll) or `"container"` (creates an internal scrollbox) |
 | `zIndex` | `number` | `10` | Z-index of the wrapper |
 
 ### `<BoundaryCursor />`

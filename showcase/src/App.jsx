@@ -162,7 +162,7 @@ function App() {
   const [scrollCylMode, setScrollCylMode] = useState('cylinder');
   const [scrollCylRadius, setScrollCylRadius] = useState(200);
   const [scrollCylSens, setScrollCylSens] = useState(0.3);
-  const [scrollCylGap, setScrollCylGap] = useState(60);
+  const [scrollCylGap, setScrollCylGap] = useState(120);
 
   const toggleVideo = () => {
     const nextState = !isPlaying;
@@ -1249,12 +1249,14 @@ function App() {
                 </div>
 
                 <ScrollCylinder
-                  items={Array.from({ length: 12 })}
+                  items={Array.from({ length: 8 })}
                   mode={scrollCylMode}
                   radius={scrollCylRadius}
                   scrollSensitivity={scrollCylSens}
                   gap={scrollCylGap}
-                  containerHeight="150vh"
+                  scrollTarget="container"
+                  viewportHeight="500px"
+                  containerHeight="1500px"
                   renderItem={(item, index, { isBehind }) => (
                     <div style={{
                       width: '160px',

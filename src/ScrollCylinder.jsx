@@ -8,7 +8,9 @@ export function ScrollCylinder({
   radius = 200,
   scrollSensitivity = 0.5,
   gap = 40,
-  containerHeight = '250vh',
+  containerHeight = '250vh', // height of the scrollable area
+  viewportHeight = '100vh', // height of the visible sticky area when scrollTarget is 'container'
+  scrollTarget = 'window', // 'window' | 'container'
   className = '',
   zIndex = 10
 }) {
@@ -17,17 +19,12 @@ export function ScrollCylinder({
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || scrollTarget !== 'window') return;
 
     const handleScroll = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      
-      // Calculate how far into the container we have scrolled.
-      // When rect.top === 0, the container is at the top of the viewport.
       const scrollProgress = -rect.top;
-      
-      // Update rotation globally
       setRotation(scrollProgress * scrollSensitivity);
     };
 
@@ -35,36 +32,48 @@ export function ScrollCylinder({
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [prefersReducedMotion, scrollSensitivity]);
+  }, [prefersReducedMotion, scrollSensitivity, scrollTarget]);
+
+  const handleContainerScroll = (e) => {
+    if (scrollTarget === 'container') {
+      const scrollProgress = e.target.scrollTop;
+      setRotation(scrollProgress * scrollSensitivity);
+    }
+  };
 
   const N = items.length;
   const angleStep = 360 / N;
 
   return (
     <div
-      ref={containerRef}
       className={className}
+      ref={containerRef}
+      onScroll={handleContainerScroll}
       style={{
         position: 'relative',
         width: '100%',
-        height: prefersReducedMotion ? 'auto' : containerHeight,
+        height: scrollTarget === 'container' ? viewportHeight : (prefersReducedMotion ? 'auto' : containerHeight),
+        overflowY: scrollTarget === 'container' ? 'auto' : 'visible',
+        overflowX: 'hidden',
         zIndex: zIndex
       }}
     >
-      <div
-        style={{
-          position: prefersReducedMotion ? 'relative' : 'sticky',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: prefersReducedMotion ? 'auto' : '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          perspective: '1200px',
-          overflow: 'hidden'
-        }}
-      >
+      {/* Spacer to create scrollable height inside the container if needed */}
+      <div style={{ height: scrollTarget === 'container' ? containerHeight : '100%' }}>
+        <div
+          style={{
+            position: prefersReducedMotion ? 'relative' : 'sticky',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: prefersReducedMotion ? 'auto' : (scrollTarget === 'container' ? viewportHeight : '100vh'),
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            perspective: '1200px',
+            overflow: 'hidden'
+          }}
+        >
         <div
           style={{
             position: 'relative',
@@ -117,6 +126,7 @@ export function ScrollCylinder({
             );
           })}
         </div>
+      </div>
       </div>
     </div>
   );
