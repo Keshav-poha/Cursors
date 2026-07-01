@@ -160,9 +160,9 @@ function App() {
 
   // 21. Scroll Cylinder
   const [scrollCylMode, setScrollCylMode] = useState('cylinder');
-  const [scrollCylRadius, setScrollCylRadius] = useState(300);
-  const [scrollCylSens, setScrollCylSens] = useState(0.8);
-  const [scrollCylGap, setScrollCylGap] = useState(80);
+  const [scrollCylRadius, setScrollCylRadius] = useState(200);
+  const [scrollCylSens, setScrollCylSens] = useState(0.3);
+  const [scrollCylGap, setScrollCylGap] = useState(60);
 
   const toggleVideo = () => {
     const nextState = !isPlaying;
@@ -1220,35 +1220,31 @@ function App() {
         {activeCategory === 'scroll' && (
           <>
             {/* Panel 21: Scroll Cylinder (Takes up vertical space to demonstrate scroll) */}
-            <div className="panel-card" style={{ gridColumn: '1 / -1', overflow: 'visible' }}>
+            <div className="panel-card" style={{ gridColumn: '1 / -1', overflow: 'visible', background: 'transparent', border: 'none' }}>
               <div className="panel" style={{ padding: '0', background: 'transparent', border: 'none', overflow: 'visible', height: 'auto' }}>
-                <div style={{ background: '#18181b', padding: '2rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '1rem', position: 'relative', zIndex: 100 }}>
-                  <h2 className="panel-title">21. Scroll-Driven Cylinder/Helix</h2>
-                  <p className="panel-desc">A layout component that binds rotation to the window scroll position. (Keep scrolling down to see it spin!)</p>
-                  <div className="panel-controls" style={{ marginTop: '1rem', background: 'transparent' }}>
-                    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                      <div className="control-group" style={{ flex: 1, minWidth: '150px' }}>
-                        <label>Mode</label>
-                        <select value={scrollCylMode} onChange={e => setScrollCylMode(e.target.value)} style={{ width: '100%', padding: '0.5rem', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', borderRadius: '4px' }}>
-                          <option value="cylinder" style={{ background: '#111' }}>Cylinder</option>
-                          <option value="helix" style={{ background: '#111' }}>Helix</option>
-                        </select>
-                      </div>
-                      <div className="control-group" style={{ flex: 1, minWidth: '150px' }}>
-                        <label>Radius: {scrollCylRadius}px</label>
-                        <input type="range" min="150" max="600" value={scrollCylRadius} onChange={e => setScrollCylRadius(Number(e.target.value))} />
-                      </div>
-                      <div className="control-group" style={{ flex: 1, minWidth: '150px' }}>
-                        <label>Scroll Sensitivity: {scrollCylSens.toFixed(1)}</label>
-                        <input type="range" min="0.1" max="2" step="0.1" value={scrollCylSens} onChange={e => setScrollCylSens(Number(e.target.value))} />
-                      </div>
-                      {scrollCylMode === 'helix' && (
-                        <div className="control-group" style={{ flex: 1, minWidth: '150px' }}>
-                          <label>Vertical Gap: {scrollCylGap}px</label>
-                          <input type="range" min="20" max="150" value={scrollCylGap} onChange={e => setScrollCylGap(Number(e.target.value))} />
-                        </div>
-                      )}
+                <div style={{ position: 'relative', zIndex: 100, display: 'flex', justifyContent: 'center', padding: '2rem 0 0 0' }}>
+                  <div className="panel-controls" style={{ background: 'rgba(24, 24, 27, 0.8)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', display: 'flex', gap: '1rem', flexWrap: 'wrap', padding: '1rem 2rem', maxWidth: '800px', flexDirection: 'row', alignItems: 'center' }}>
+                    <div className="control-group" style={{ flex: 1, minWidth: '120px' }}>
+                      <label>Mode</label>
+                      <select value={scrollCylMode} onChange={e => setScrollCylMode(e.target.value)} style={{ width: '100%', padding: '0.4rem', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', borderRadius: '4px' }}>
+                        <option value="cylinder" style={{ background: '#111' }}>Cylinder</option>
+                        <option value="helix" style={{ background: '#111' }}>Helix</option>
+                      </select>
                     </div>
+                    <div className="control-group" style={{ flex: 1, minWidth: '120px' }}>
+                      <label>Radius: {scrollCylRadius}px</label>
+                      <input type="range" min="100" max="400" value={scrollCylRadius} onChange={e => setScrollCylRadius(Number(e.target.value))} />
+                    </div>
+                    <div className="control-group" style={{ flex: 1, minWidth: '120px' }}>
+                      <label>Speed: {scrollCylSens.toFixed(1)}</label>
+                      <input type="range" min="0.1" max="1" step="0.1" value={scrollCylSens} onChange={e => setScrollCylSens(Number(e.target.value))} />
+                    </div>
+                    {scrollCylMode === 'helix' && (
+                      <div className="control-group" style={{ flex: 1, minWidth: '120px' }}>
+                        <label>Gap: {scrollCylGap}px</label>
+                        <input type="range" min="20" max="150" value={scrollCylGap} onChange={e => setScrollCylGap(Number(e.target.value))} />
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -1258,16 +1254,16 @@ function App() {
                   radius={scrollCylRadius}
                   scrollSensitivity={scrollCylSens}
                   gap={scrollCylGap}
-                  containerHeight="250vh"
+                  containerHeight="150vh"
                   renderItem={(item, index, { isBehind }) => (
                     <div style={{
-                      width: '240px',
-                      height: '240px',
-                      background: isBehind ? 'transparent' : 'rgba(12, 12, 12, 0.4)',
-                      border: isBehind ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(255,255,255,0.15)',
-                      borderRadius: '24px',
-                      backdropFilter: 'blur(10px)',
-                      boxShadow: isBehind ? 'none' : '0 20px 40px rgba(0,0,0,0.4)',
+                      width: '160px',
+                      height: '160px',
+                      background: isBehind ? 'transparent' : 'rgba(12, 12, 12, 0.85)',
+                      border: isBehind ? '1px solid rgba(217, 4, 41, 0.05)' : '1px solid rgba(217, 4, 41, 0.4)',
+                      borderRadius: '16px',
+                      backdropFilter: 'blur(8px)',
+                      boxShadow: isBehind ? 'none' : '0 10px 30px rgba(217, 4, 41, 0.15)',
                       transition: 'all 0.3s ease'
                     }} />
                   )}
