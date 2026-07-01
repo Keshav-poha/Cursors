@@ -1209,7 +1209,6 @@ function App() {
                   <label>Z Separation Spacing: {stackDepth}px</label>
                   <input type="range" min="5" max="55" value={stackDepth} onChange={e => setStackDepth(Number(e.target.value))} />
                 </div>
-                </div>
               </div>
             </div>
           </>
